@@ -27,10 +27,10 @@ public class MainController {
 //		return "/main";
 //	}	
 	@GetMapping({ "/main-page", "/index" })
-	@ResponseBody
+	// @ResponseBody //데이터를 전달하는 애다! jsp 이동 할 땐 이거 쓰면 안돼!
 	public String mainPage() {
 		System.out.println("mainPage() 호출 확인");
-		return "/main";
+		return "main";
 	}
 
 	// TODO - 삭제 예정
