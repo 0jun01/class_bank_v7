@@ -96,7 +96,6 @@ public class UserController {
 
 		// 서비스 호출
 		User principal = userService.readUser(dto);
-
 		// 세션 메모리에 등록 처리
 		session.setAttribute("principal", principal);
 
