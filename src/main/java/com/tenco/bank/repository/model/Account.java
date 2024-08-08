@@ -51,10 +51,13 @@ public class Account {
 		}
 	}
 	
+	
 	// 계좌 소유자 확인 기능
 	public void checkOwner(Integer userId) {
 		if(this.userId != userId) {
 			throw new DataDeliveryException(Define.NOT_ACCOUNT_OWNER,HttpStatus.BAD_REQUEST );
-		}
+		} 
+		
 	}
+	
 }
