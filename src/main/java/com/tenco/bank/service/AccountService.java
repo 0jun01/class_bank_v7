@@ -1,5 +1,6 @@
 package com.tenco.bank.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.tenco.bank.repository.interfaces.AccountRepository;
 import com.tenco.bank.repository.interfaces.HistoryRepository;
 import com.tenco.bank.repository.model.Account;
 import com.tenco.bank.repository.model.History;
+import com.tenco.bank.repository.model.HistoryAccount;
 import com.tenco.bank.repository.model.User;
 import com.tenco.bank.utils.Define;
 
@@ -175,10 +177,15 @@ public class AccountService {
 		wAccountEntity.checkOwner(pricipalId);
 		// 4. 비밀 번호 확인
 		wAccountEntity.checkPassword(dto.getPassword());
-		
+
 		// 5. 잔액 여부 확인
 		if (wAccountEntity.getBalance() < dto.getAmount()) {
 			throw new DataDeliveryException(Define.LACK_Of_BALANCE, HttpStatus.BAD_REQUEST);
+		}
+		// 5.5 자신한테 입금 불가
+		if (wAccountEntity.getNumber().trim().equals(dAccountEntity.getNumber())
+				|| wAccountEntity.getNumber() == dAccountEntity.getNumber()) {
+			throw new DataDeliveryException("본인 계좌에는 이체가 불가능 합니다", HttpStatus.BAD_REQUEST);
 		}
 		// 6. 입금 계좌 상태값 변경
 		dAccountEntity.deposit(dto.getAmount());
@@ -188,17 +195,42 @@ public class AccountService {
 		wAccountEntity.withdraw(dto.getAmount());
 		// 9 출금 계좌 update
 		accountRepository.updateById(wAccountEntity);
-		// 10 
-		History history = History.builder()
-							.amount(dto.getAmount())
-							.wAccountId(wAccountEntity.getId())
-							.dAccountId(dAccountEntity.getId())
-							.wBalance(wAccountEntity.getBalance())
-							.dBalance(dAccountEntity.getBalance())
-							.build();
+		// 10
+		History history = History.builder().amount(dto.getAmount()).wAccountId(wAccountEntity.getId())
+				.dAccountId(dAccountEntity.getId()).wBalance(wAccountEntity.getBalance())
+				.dBalance(dAccountEntity.getBalance()).build();
 		int rowResultCount = historyRepository.insert(history);
 		if (rowResultCount != 1) {
 			throw new DataDeliveryException(Define.FAILED_PROCESSING, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	/**
+	 * 단일 계좌 조회 기능 
+	 * @param accountId (px)
+	 * @return
+	 */
+	public Account readAccountById(Integer accountId) {
+		Account accountEntity = accountRepository.findByAccountId(accountId);
+		if(accountEntity == null) {
+			throw new DataDeliveryException(Define.NOT_EXIST_ACCOUNT, HttpStatus.BAD_REQUEST);
+		}
+		
+		return accountEntity;
+	}
+	
+	/**
+	 * 단일 계좌 거래 내역 조회 
+	 * @param type = [all, deposit, withdrawal]
+	 * @param accountId (pk)
+	 * @return 전체, 입금, 출금 거래 내역(3가지 타입) 반환
+	 */
+	// @Transactional
+	public List<HistoryAccount> readHistoryByAccountId(String type, Integer accountId){
+		List<HistoryAccount> list = new ArrayList<>();
+		list = historyRepository.findByAccountIdAndTypeOfHistory(type, accountId);
+		return list;
+	}
+	
+	
 }
