@@ -33,16 +33,38 @@
 			<tbody>
 				<c:forEach var ="history" items="${historyList}">
 				<tr>
-					<th>${history.createdAt}</th>
+					<th>${history.timestampToString(history.createdAt)}</th>
 					<th>${history.sender}</th>
 					<th>${history.receiver}</th>
-					<th>${history.amount}</th>
-					<th>${history.balance}</th>
+					<th>${history.formatKoreanWon(history.amount)}</th>
+					<th>${history.formatKoreanWon(history.balance)}</th>
 				</tr>
 				
 				</c:forEach>
 			</tbody>
 		</table>
+		<br>
+		<!-- Pagination -->
+		<div class="d-felx justify-content-center">
+			<ul class="pagination">
+				<!-- Previous Page Link -->
+				<li class="page-item <c:if test='${currentPage == 1}'>disabled</c:if>">
+					<a class="page-link" href="?type=${type}&page=${currentPage - 1}&size=${size}">Previous</a>
+				</li>
+				
+				<!-- Page Numbers -->
+				<!-- [Previous] 1 2 3 4 [Next] -->
+				<c:forEach begin="1" end="${totalPages}" var="page">				
+				<li class="page-item <c:if test='${page == currentPage}'>active</c:if>">
+					<a class="page-link" href="?type=${type}&page=${page}&size=${size}">${page}</a>
+				</li>
+				</c:forEach>
+				<!-- Next Page Link -->
+				<li class="page-item <c:if test='${currentPage == totalPages}'>disabled</c:if>">
+					<a class="page-link" href="?type=${type}&page=${currentPage + 1}&size=${size}">Next</a>
+				</li>
+			</ul>
+		</div>
 	</div>
 	 
 </div>
