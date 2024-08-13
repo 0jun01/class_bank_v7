@@ -35,7 +35,7 @@ public class AccountController {
 
 	// 계좌 생성 화면 요청 DI 처리
 	private final HttpSession session;
-	private AccountService accountService;
+	private final AccountService accountService;
 
 	@Autowired
 	public AccountController(HttpSession session, AccountService accountService) {
