@@ -28,6 +28,9 @@
   		<div class="d-flex justify-content-end">
 			<button type="submit" class="btn btn-primary mt-md-4">회원가입</button>
 		</div>
+		<div>
+			<a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=5c02dbc5884a250128050da5f324c46b&redirect_uri=http://localhost:8080/user/kakao"><img alt="소셜로그인이미지" src="/images/kakao_login_small.png"></a>
+		</div>
 </form>
 </div>
 <!-- end of col-sm- -->

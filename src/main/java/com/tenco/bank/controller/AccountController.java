@@ -137,7 +137,7 @@ public class AccountController {
 
 		return "redirect:/account/list";
 	}
-
+	
 	// 입금 페이지 요청
 	@GetMapping("/deposit")
 	public String depositPage() {

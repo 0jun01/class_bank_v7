@@ -1,12 +1,20 @@
 package com.tenco.bank.controller;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import com.mysql.cj.protocol.x.Ok;
 import com.tenco.bank.dto.SignInDTO;
 import com.tenco.bank.dto.SignUpDTO;
 import com.tenco.bank.handler.exception.DataDeliveryException;
@@ -73,6 +81,7 @@ public class UserController {
 
 	/**
 	 * 회원 로그인 요청 처리 주소설계 : http://localhost:8080/user/sign-in
+	 * 
 	 * @return
 	 */
 	@PostMapping("/sign-in")
@@ -88,10 +97,27 @@ public class UserController {
 
 		return "redirect:/account/list";
 	}
-	
+
 	@GetMapping("/logout")
 	public String logout() {
 		session.invalidate(); // 로그아웃 됨
 		return "redirect:/user/sign-in";
+	}
+
+	@GetMapping("/kakao")
+	@ResponseBody
+	public ResponseEntity<?> loginByKakao(@RequestParam(name = "code") String code) {
+		System.out.println("code : " + code);
+		URI uri = UriComponentsBuilder
+				.fromUriString("https://kauth.kakao.com/oauth/token")
+				.path("/grant_type")
+				.path("/client_id")
+				.path("/redirect_uri")
+				.path(code)
+				.build()
+				.toUri();
+		
+		RestTemplate restTemplate1 = new RestTemplate();
+		return ResponseEntity.ok(userService.register(code));
 	}
 }

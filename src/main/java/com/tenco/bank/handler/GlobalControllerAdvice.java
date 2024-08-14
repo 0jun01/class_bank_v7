@@ -16,13 +16,13 @@ public class GlobalControllerAdvice {
 	 * (개발시에 많이 활용) 모든 예외 클래스를 알 수 없기 때문에 로깅으로 확인할 수 있도록 로깅처리 - 동기적
 	 * 방식(System.out.prinln), @slf4j (비동기 처리)
 	 */
-	@ExceptionHandler(Exception.class)
-	public void exception(Exception e) {
-		System.out.println("----------------");
-		System.out.println(e.getClass().getName());
-		System.out.println(e.getMessage()); // 어떠한 예외 클래스가 발생 했을 때 기본적으로 메세지가 담겨져있음
-		System.out.println("----------------");
-	}
+//	@ExceptionHandler(Exception.class)
+//	public void exception(Exception e) {
+//		System.out.println("----------------");
+//		System.out.println(e.getClass().getName());
+//		System.out.println(e.getMessage()); // 어떠한 예외 클래스가 발생 했을 때 기본적으로 메세지가 담겨져있음
+//		System.out.println("----------------");
+//	}
 
 	// 같은 예외처리가 되어있으면 더욱 더 구체적인 예외처리가 잡힌다.
 	// 예외를 내릴 때 데이터를 내리고 싶다면 1. @RestControllerAdvice를 사용하면 된다.
@@ -58,7 +58,7 @@ public class GlobalControllerAdvice {
 	@ExceptionHandler(RedirectException.class)
 	public ModelAndView redirectException(RedirectException e) {
 
-		ModelAndView modelAndView = new ModelAndView("errorPage");
+		ModelAndView modelAndView = new ModelAndView("error");
 		modelAndView.addObject("statusCode", e.getStatus().value());
 		modelAndView.addObject("message", e.getMessage());
 		return modelAndView; // 페이지 반환 + 데이터 내려줌

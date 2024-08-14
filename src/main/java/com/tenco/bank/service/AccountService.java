@@ -236,7 +236,7 @@ public class AccountService {
 		return list;
 
 	}
-
+	
 	// 해당 계좌와 거래 유형에 따른 전체 레코드 수를 반환하는 메서드
 	public int countHistoryByAccountIdAndType(String type, Integer accountId) {
 		return historyRepository.countByAccountIdAndType(type, accountId);
