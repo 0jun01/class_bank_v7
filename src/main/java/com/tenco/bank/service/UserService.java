@@ -46,7 +46,6 @@ public class UserService {
 	public void createUser(SignUpDTO dto) {
 		int result = 0;
 
-		System.out.println(dto.getMFile().getOriginalFilename());
 
 		try {
 			// 코드 추가 부분
@@ -64,7 +63,7 @@ public class UserService {
 			throw new RedirectException("알 수 없는 오류", HttpStatus.SERVICE_UNAVAILABLE);
 		}
 
-		if (!dto.getMFile().isEmpty()) {
+		if (dto.getMFile() != null && !dto.getMFile().isEmpty()) {
 			// 파일 업로드 로직 구현
 			String[] fileNames = uploadFile(dto.getMFile());
 
@@ -140,10 +139,13 @@ public class UserService {
 		}
 		return new String[] { mFile.getOriginalFilename(), uploadFileName };
 	}
-
-	@Transactional
-	public Object register(String code) {
-		
-		return null;
+	
+	/**
+	 * username 사용자 존재 여부 조회
+	 * @param SignUpDTO
+	 * @return User, null
+	 */
+	public User searcUsername(String username) {
+		return userRepository.findByUsername(username);
 	}
 }
